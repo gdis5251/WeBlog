@@ -189,6 +189,14 @@
   - ##### Description
 
     Closes a previously opened connection. [`mysql_close()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-close.html) also deallocates the connection handler pointed to by `mysql` if the handler was allocated automatically by [`mysql_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-init.html) or [`mysql_connect()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-connect.html). Do not use the handler after it has been closed.
+  
+- ##### unsigned long mysql_real_escape_string(MYSQL *mysql, char *to, const char from, unsigned long length)
+
+  - 将正文进行转义，防止正文出现特殊符号从而导致 SQL 语句出错
+  - mysql 句柄
+  - to 是动态开辟的一个空间，是 from.size() * 2 + 1
+  - from 是正文地址
+  - length 是 from.size() 的大小
 
 
 
@@ -198,62 +206,247 @@
 
 ### 一、博客管理
 
+1. 传统的 API 设计方式：使用 query_string 来进行传递信息
+2. **restful 风格的 API 设计方式**：**使用不用的 HTTP 方法来表达不同的语义**
+3. **使用 path 来表示要操作的资源**
+4. **使用 JSON 来组织 body 中的数据**
+
 1. #### 新增博客
 
-   1. 传统的 API 设计方式：使用 query_string 来进行传递信息
+   
 
-   2. **restful 风格的 API 设计方式**：使用不用的 HTTP 方法来表达不同的语义
+   使用 POST 方法表示新增
 
-      1. 使用 POST 方法表示新增
+   例如：
 
-         例如：
+   POST /blog
 
-         POST /blog
+   {
 
-         {
+   ​	title: xxxx,
 
-         ​	title: xxxx,
+   ​	content: xxxx,
 
-         ​	content: xxxx,
+   ​	create_time: xxxx,
 
-         ​	create_time: xxxx,
+   ​	tag_id:	xxxx
 
-         ​	tag_id:	xxxx
+   } 
 
-         } 
+   
 
-         HTTP/1.1 200 OK
+   HTTP/1.1 200 OK
 
-         {
+   {
 
-         ​	ok: true,
+   ​	ok: true,
 
-         ​	reason: "xxxx"
+   ​	reason: "xxxx"
 
-         }
-
-      2. 使用 GET 方法表示查看
-
-      3. 使用 PUT 方法表示修改
-
-      4. 使用 DELETE 表示删除
-
-      使用 path 来表示要操作的资源
-
-      使用 JSON 来组织 body 中的数据
+   }
 
 2. #### 获取博客列表
 
+   查看所有博客（标题列表）
+
+   使用 GET 方法表示查看
+
+   GET /blog                  	获取所有
+
+   GET /blog?tag_id=1 	按照标签来筛选
+
+   
+
+   HTTP/1.1 200 OK
+
+   [
+
+   ​	{
+
+   ​		blog_id: 1,
+
+   ​		title: "My Carrer",
+
+   ​		create_time: "2019/07/27",
+
+   ​		tag_id: 1	
+
+   ​	},
+
+   ​	{
+
+   ​		...
+
+   ​	}
+
+   ]
+
 3. #### 获取某个博客的详细内容
+
+   查看某个博客
+
+   GET /blog/:blog_id     // :blog_id 会将 blog_id 替换成真正的 id； 类似 /blog/1
+
+   
+
+   HTTP/1.1 200 OK
+
+   {
+
+   ​	"blog_id": 1,
+
+   ​	"title": "My Carrer",
+
+   ​	"content": "博客正文",
+
+   ​	"create_time": "2019/07/27",
+
+   ​	"tag_id": 1	
+
+   }
 
 4. #### 修改博客
 
+   使用 PUT 方法表示修改
+
+   PUT /blog/:blog_id
+
+   {
+
+   ​	title: "修改之后的标题",
+
+   ​	content: "修改之后的正文",
+
+   ​	tag_id: "修改之后的 tag_id"
+
+   }
+
+   
+
+   HTTP/1.1 200 OK
+
+   {
+
+   ​	ok: true
+
+   }
+
 5. #### 删除博客
+
+   使用 DELETE 表示删除
+
+   DELETE /blog/:blog_id
+
+   
+
+   HTTP/1.1 200 OK
+
+   {
+
+   ​	ok: true
+
+   }
 
 ### 二、标签管理
 
 1. #### 新增标签
 
+   POST /tag
+
+   {
+
+   ​	"tag_name": "新增的标签名",
+
+   }
+
+   
+
+   HTTP/1.1 200 OK
+
+   {
+
+   ​	ok: true
+
+   }
+
 2. #### 删除标签
 
+   DELETE /tag/:tag_id
+
+   
+
+   HTTP/1.1 200 OK
+
+   {
+
+   ​	ok: true
+
+   }
+
 3. #### 查看所有标签
+
+   GET /tag
+
+   
+
+   HTTP/1.1 200 OK
+
+   [
+
+   ​	{
+
+   ​		tag_id: 1,
+
+   ​		tag_name: "c++"
+
+   ​	},
+
+   ​	{},
+
+   ​	{}
+
+   ]
+
+## 编码
+
+### 1. 数据库部分
+
+Json 作为函数参数是非常常见的
+
+一个典型场景：跨语言调用。不同的语言对于类型的约定是不一样的，但是字符串大家都有，所以 Json 对于跨语言调用还是很方便的。
+
+
+
+通过 sprintf 的方式来拼接 SQL 语句
+
+'%s', Connect 万一包含了单引号咋办？
+
+借助：mysql_real_escape_string 进行一个正文内容的转义。
+
+**小操作：**
+
+将 string 类型转换为整数：stoi(string)
+
+将 C 风格字符串转换为整数：atoi(char*)
+
+将数字类型转换为 string 类型：to_string(数字类型)
+
+### 2. HTTP 服务器
+
+基于 TCP 服务器，在 HTTP 协议格式的基础上来完成字符串的解析和拼装。
+
+cpp-httplib 
+
+#### 正则表达式
+
+用来筛选字符串，用特殊符号规定字符串有一些特殊的特征。
+
+用特殊符号来描述一个字符串应该具有哪些特殊特征，特征包括不限于：包含哪些特定字符串，以什么开头 ，以什么结尾，特定字符重复出现几次......
+
+
+
+#### Postman HTTP 测试工具
+
+#### curl 命令行版本的 HTTP 客户端 
+
+### 3. 客户端部分
