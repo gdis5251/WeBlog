@@ -425,6 +425,107 @@ Json 作为函数参数，可以很方便的进行数据库命令拼接。Json �
 
 将数字类型转换为 string 类型：to_string(数字类型)
 
+#### 使用 gtest 测试各个模块
+
+**gtest 测试博客表各个模块**
+
+```cpp
+TEST(event, test)
+{
+    MYSQL* mysql = blog_system::MySQLInit();
+    blog_system::BlogTable blog_table(mysql);
+    Json::StyledWriter writer;
+    Json::Value blog;
+    
+    // 单元测试 gtest google 提供的一个单元测试框架
+
+
+    // 测试插入
+    blog["title"] = "My Carrer!";
+    blog["content"] = "我要拿1000W年薪！";
+    blog["tag_id"] = 1;
+    blog["create_time"] = "2019/07/27";
+
+    EXPECT_EQ(blog_table.Insert(blog), true);
+
+    // 测试查找
+    Json::Value blogs;
+    EXPECT_EQ(blog_table.SelectAll(&blogs), true);
+    
+    
+    // 测试查找单个博客
+    EXPECT_EQ(blog_table.SelectOne(3, &blog), true);
+    
+    
+    // 测试修改博客
+    blog["blog_id"] = 3;
+    blog["title"] = "我的 Offers！";
+    blog["content"] = "100W\n 100W 100W 100W'''''!!!100000000W'''";
+    
+    EXPECT_EQ(blog_table.Update(blog), true);
+
+    // 测试删除
+    EXPECT_EQ(blog_table.Delete(3), true);
+
+    blog_system::MySQLRelease(mysql);
+}
+int main()
+{
+    // TestBlogTbale();
+    
+    // TestTagTable();
+    
+    testing::InitGoogleTest();
+    return RUN_ALL_TESTS();
+}
+
+```
+
+
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190728110234867.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
+
+
+**gtest 测试标签表各个模块**
+
+```cpp
+TEST(test, tag_table)
+{
+
+    MYSQL* mysql = blog_system::MySQLInit();
+    blog_system::TagTable tag_table(mysql);
+    Json::StyledWriter writer;
+
+    Json::Value tag;
+    // 测试插入
+    tag["tag_name"] = "C语言";
+    EXPECT_EQ(tag_table.Insert(tag), true);
+
+    // 测试查找
+    Json::Value tags;
+    EXPECT_EQ(tag_table.SelectAll(&tags), true);
+
+    // 测试删除
+    EXPECT_EQ(tag_table.Delete(1), true);
+}
+
+int main()
+{
+    // TestBlogTbale();
+    
+    // TestTagTable();
+    
+    testing::InitGoogleTest();
+    return RUN_ALL_TESTS();
+}
+
+```
+
+
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190728111622153.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
 ### 2. HTTP 服务器
 
 基于 TCP 服务器，在 HTTP 协议格式的基础上来完成字符串的解析和拼装。
