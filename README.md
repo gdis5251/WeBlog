@@ -411,17 +411,11 @@
 
 ### 1. 数据库部分
 
-Json 作为函数参数是非常常见的
+Json 作为函数参数，可以很方便的进行数据库命令拼接。Json 中的键值对，可以很方便的解析出我们所需要的东西。
 
-一个典型场景：跨语言调用。不同的语言对于类型的约定是不一样的，但是字符串大家都有，所以 Json 对于跨语言调用还是很方便的。
+通过 sprintf 的方式来拼接 SQL 语句。
 
-
-
-通过 sprintf 的方式来拼接 SQL 语句
-
-'%s', Connect 万一包含了单引号咋办？
-
-借助：mysql_real_escape_string 进行一个正文内容的转义。
+借助：mysql_real_escape_string 进行一个正文内容的转义。防止正文中出现特殊符号干扰数据库命令。
 
 **小操作：**
 
@@ -435,18 +429,45 @@ Json 作为函数参数是非常常见的
 
 基于 TCP 服务器，在 HTTP 协议格式的基础上来完成字符串的解析和拼装。
 
-cpp-httplib 
-
-#### 正则表达式
-
-用来筛选字符串，用特殊符号规定字符串有一些特殊的特征。
-
-用特殊符号来描述一个字符串应该具有哪些特殊特征，特征包括不限于：包含哪些特定字符串，以什么开头 ，以什么结尾，特定字符重复出现几次......
-
-
+使用  [cpp-httplib](<https://github.com/yhirose/cpp-httplib>) 第三方库来管理连接和路由选择。
 
 #### Postman HTTP 测试工具
 
-#### curl 命令行版本的 HTTP 客户端 
+测试各个接口是否正常可用：
+
+**新增博客**
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190728100751272.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
+**查看所有博客**
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190728100757850.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
+**查看某个具体的博客**
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2019072810080312.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
+**修改某个具体的博客**
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2019072810080926.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
+**删除某个具体的博客**
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190728100814660.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
+**新增标签**
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190728100820294.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
+**查看所有标签**
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190728100825277.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
+**删除某个具体的标签**
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190728100830203.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjY3ODUwNw==,size_16,color_FFFFFF,t_70)
+
+
 
 ### 3. 客户端部分
+
