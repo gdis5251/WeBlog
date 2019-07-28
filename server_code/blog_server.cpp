@@ -1,5 +1,6 @@
 #include <iostream>
 #include <signal.h>
+#include <string>
 #include "httplib.h"
 #include "db.hpp"
 
@@ -11,7 +12,12 @@ int main()
     using namespace blog_system;
     // 1. 先和数据库建立好连接
     mysql = blog_system::MySQLInit();
+
+    // 如果手动释放 mysql 句柄有可能会遗忘造成内存泄漏
+    // 所以使用信号捕捉，因为我本人退出服务端程序都是使用 ctrl + c
+    // 所以 捕捉 SIGINT 信号，捕捉到后先释放 mysql 句柄， 在退出程序
     signal(SIGINT, [](int signo){
+           (void) signo;
            blog_system::MySQLRelease(mysql);
            exit(EXIT_FAILURE);
            });
@@ -21,8 +27,10 @@ int main()
     TagTable tag_table(mysql);
 
     // 3. 创建服务器, 并设置“路由”（HTTP 中的路由，跟IP中的路由不一样，
-    // 此处的路由指的是把 方法 + path => 哪个函数关联关系生命清楚）
+    // 此处的路由指的是把 方法 + path => 哪个函数关联关系声明清楚）
     Server server;
+
+
     // 新增博客
     server.Post("/blog", [&blog_table](const Request& req, Response& resp){
                 printf("新增博客！\n");
@@ -37,9 +45,11 @@ int main()
                 {
                     // 解析出错，给用户提示
                     printf("解析请求失败！ %s\n", req.body.c_str());
+
                     // 构造一个响应对象，告诉客户端出错
                     resp_json["ok"] = false;
                     resp_json["reason"] = "Parse error!";
+                    
                     resp.status = 400;
                     resp.set_content(writer.write(resp_json), "application/json");
 
@@ -60,7 +70,6 @@ int main()
                     resp.set_content(writer.write(resp_json), "application/json");
 
                     return;
-
                 }
 
                 // 3. 调用 MySQL  的接口来操作
@@ -85,7 +94,7 @@ int main()
     });
 
     // 查看所有博客, 列表
-    server.Get("blog", [&blog_table](const Request& req, Response& resp){
+    server.Get("/blog", [&blog_table](const Request& req, Response& resp){
                printf("查看所有博客！\n");
 
                // 1. 尝试获取 tag_id, 如果 tag_id 不存在，返回空字符串
@@ -228,6 +237,7 @@ int main()
 
     // 新增标签
     server.Post("/tag", [&tag_table](const Request& req, Response& resp) {
+                printf("新增标签！\n");
                 Json::FastWriter writer;
                 Json::Reader reader;
                 Json::Value req_json;
@@ -305,6 +315,7 @@ int main()
 
     // 查看所有标签
     server.Get("tag", [&tag_table](const Request& req, Response& resp){
+               printf("查看所有标签!\n");
                (void) req; 
                Json::Reader reader; 
                Json::FastWriter writer; 
@@ -328,8 +339,9 @@ int main()
 
 
 
-    server.listen("0", 9090);
-
+    server.set_base_dir("./wwwroot");
+    printf("开始监听\n");
+    server.listen("0.0.0.0", 9090);
 
     return 0;
 }
