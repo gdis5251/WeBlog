@@ -1,5 +1,15 @@
 # WeBlog
 
+## 描述：
+
+制作一个网页版的博客管理系统，用户可以添加、查看、修改、删除博客。还可以对博客进行标签设定。当然标签也是可以添加、查看和删除的。
+
+## 环境
+
+- 编程语言：C++
+- 开发平台：Linux CentOS 7.0
+- 开发工具：vim 代码编辑器，gcc 编译器，makefile 工程管理工具，gdb 调试器
+
 ## 需求：
 
 实现一个简单的博客系统。
@@ -207,205 +217,238 @@
 ### 一、博客管理
 
 1. 传统的 API 设计方式：使用 query_string 来进行传递信息
+
 2. **restful 风格的 API 设计方式**：**使用不用的 HTTP 方法来表达不同的语义**
+
 3. **使用 path 来表示要操作的资源**
+
 4. **使用 JSON 来组织 body 中的数据**
 
-1. #### 新增博客
+5. #### 新增博客
 
-   
-
+   ```cpp
    使用 POST 方法表示新增
-
+   
    例如：
-
+   
    POST /blog
-
+   
    {
-
-   ​	title: xxxx,
-
-   ​	content: xxxx,
-
-   ​	create_time: xxxx,
-
-   ​	tag_id:	xxxx
-
+   
+   	title: xxxx,
+   
+   	content: xxxx,
+   
+   	create_time: xxxx,
+   
+   	tag_id:	xxxx
+   
    } 
-
    
-
+   
+   
    HTTP/1.1 200 OK
-
+   
    {
-
-   ​	ok: true,
-
-   ​	reason: "xxxx"
-
+   
+   	ok: true,
+   
+   	reason: "xxxx"
+   
    }
+   
+   
+   ```
 
-2. #### 获取博客列表
+6. #### 获取博客列表
 
+   ```cpp
    查看所有博客（标题列表）
-
+   
    使用 GET 方法表示查看
-
+   
    GET /blog                  	获取所有
-
+   
    GET /blog?tag_id=1 	按照标签来筛选
-
    
-
+   
+   
    HTTP/1.1 200 OK
-
+   
    [
-
-   ​	{
-
-   ​		blog_id: 1,
-
-   ​		title: "My Carrer",
-
-   ​		create_time: "2019/07/27",
-
-   ​		tag_id: 1	
-
-   ​	},
-
-   ​	{
-
-   ​		...
-
-   ​	}
-
+   
+   	{
+   
+   		blog_id: 1,
+   
+   		title: "My Carrer",
+   
+   		create_time: "2019/07/27",
+   
+   		tag_id: 1	
+   
+   	},
+   
+   	{
+   
+   		...
+   
+   	}
+   
    ]
+   ```
 
-3. #### 获取某个博客的详细内容
+   
 
+7. #### 获取某个博客的详细内容
+
+   ```cpp
    查看某个博客
-
+   
    GET /blog/:blog_id     // :blog_id 会将 blog_id 替换成真正的 id； 类似 /blog/1
+   
+   
+   
+   HTTP/1.1 200 OK
+   
+   {
+   
+   	"blog_id": 1,
+   
+   	"title": "My Carrer",
+   
+   	"content": "博客正文",
+   
+   	"create_time": "2019/07/27",
+   
+   	"tag_id": 1	
+   
+   }
+   ```
 
    
 
-   HTTP/1.1 200 OK
+8. #### 修改博客
 
-   {
-
-   ​	"blog_id": 1,
-
-   ​	"title": "My Carrer",
-
-   ​	"content": "博客正文",
-
-   ​	"create_time": "2019/07/27",
-
-   ​	"tag_id": 1	
-
-   }
-
-4. #### 修改博客
-
+   ```cpp
    使用 PUT 方法表示修改
-
+   
    PUT /blog/:blog_id
-
+   
    {
-
-   ​	title: "修改之后的标题",
-
-   ​	content: "修改之后的正文",
-
-   ​	tag_id: "修改之后的 tag_id"
-
+   
+   	title: "修改之后的标题",
+   
+   	content: "修改之后的正文",
+   
+   	tag_id: "修改之后的 tag_id"
+   
    }
+   
+   
+   
+   HTTP/1.1 200 OK
+   
+   {
+   
+   	ok: true
+   
+   }
+   ```
 
    
-
-   HTTP/1.1 200 OK
-
-   {
-
-   ​	ok: true
-
-   }
 
 5. #### 删除博客
 
-   使用 DELETE 表示删除
-
-   DELETE /blog/:blog_id
-
+   ```cpp
+使用 DELETE 表示删除
+   
+DELETE /blog/:blog_id
    
 
-   HTTP/1.1 200 OK
-
-   {
-
-   ​	ok: true
-
+   
+HTTP/1.1 200 OK
+   
+{
+   
+	ok: true
+   
    }
+   ```
+   
+   
 
 ### 二、标签管理
 
 1. #### 新增标签
 
+   ```cpp
    POST /tag
-
+   
    {
-
-   ​	"tag_name": "新增的标签名",
-
+   
+   	"tag_name": "新增的标签名",
+   
    }
+   
+   
+   
+   HTTP/1.1 200 OK
+   
+   {
+   
+   	ok: true
+   
+   }
+   ```
 
    
-
-   HTTP/1.1 200 OK
-
-   {
-
-   ​	ok: true
-
-   }
 
 2. #### 删除标签
 
+   ```cpp
    DELETE /tag/:tag_id
+   
+   
+   
+   HTTP/1.1 200 OK
+   
+   {
+   
+   	ok: true
+   
+   }
+   ```
 
    
-
-   HTTP/1.1 200 OK
-
-   {
-
-   ​	ok: true
-
-   }
 
 3. #### 查看所有标签
 
-   GET /tag
-
+   ```cpp
+GET /tag
    
 
-   HTTP/1.1 200 OK
-
-   [
-
-   ​	{
-
-   ​		tag_id: 1,
-
-   ​		tag_name: "c++"
-
-   ​	},
-
-   ​	{},
-
-   ​	{}
-
+   
+HTTP/1.1 200 OK
+   
+[
+   
+	{
+   
+		tag_id: 1,
+   
+		tag_name: "c++"
+   
+	},
+   
+	{},
+   
+	{}
+   
    ]
+   ```
+   
+   
 
 ## 编码
 
