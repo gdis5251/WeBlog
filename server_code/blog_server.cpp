@@ -314,7 +314,7 @@ int main()
                   });
 
     // 查看所有标签
-    server.Get("tag", [&tag_table](const Request& req, Response& resp){
+    server.Get("/tag", [&tag_table](const Request& req, Response& resp){
                printf("查看所有标签!\n");
                (void) req; 
                Json::Reader reader; 

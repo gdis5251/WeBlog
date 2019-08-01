@@ -138,14 +138,14 @@ TEST(test, tag_table)
     Json::Value tag;
     // 测试插入
     tag["tag_name"] = "C语言";
-    EXPECT_EQ(tag_table.Insert(tag), true);
+    EXPECT_TRUE(tag_table.Insert(tag));
 
     // 测试查找
     Json::Value tags;
-    EXPECT_EQ(tag_table.SelectAll(&tags), true);
+    EXPECT_TRUE(tag_table.SelectAll(&tags));
 
     // 测试删除
-    EXPECT_EQ(tag_table.Delete(1), true);
+    EXPECT_TRUE(tag_table.Delete(2));
 }
 
 int main()
