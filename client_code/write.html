@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+     <meta charset="UTF-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+     <meta name="description" content="">
+     <meta name="keywords" content="">
+     <meta name="author" content="">
+     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+     <meta name="renderer" content="webkit">
+     <meta http-equiv="Cache-Control" content="no-siteapp" />
+     <link rel="icon" type="image/png" href="assets/i/favicon.png">
+     <meta name="mobile-web-app-capable" content="yes">
+     <link rel="icon" sizes="192x192" href="assets/i/app-icon72x72@2x.png">
+     <meta name="apple-mobile-web-app-capable" content="yes">
+     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+     <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+     <link rel="apple-touch-icon-precomposed" href="assets/i/app-icon72x72@2x.png">
+     <meta name="msapplication-TileImage" content="assets/i/app-icon72x72@2x.png">
+     <meta name="msapplication-TileColor" content="#0e90d2">
+     <link rel="stylesheet" href="editor.md/css/editormd.css" />
+
+
+     <title>We Blog--Write</title>
+
+     <link rel="stylesheet" href="css/bootstrap.min.css">
+     <link rel="stylesheet" href="css/font-awesome.min.css">
+
+     <!-- Main css -->
+     <link rel="stylesheet" href="css/style.css">
+     <link href="https://fonts.googleapis.com/css?family=Lora|Merriweather:300,400" rel="stylesheet">
+
+</head>
+
+<style>
+     [v-cloak] {
+          display: none;
+     }
+</style>
+
+<body>
+
+     <!-- PRE LOADER -->
+
+     <div class="preloader">
+          <div class="sk-spinner sk-spinner-wordpress">
+               <span class="sk-inner-circle"></span>
+          </div>
+     </div>
+
+     <!-- Navigation section  -->
+
+     <div class="navbar navbar-default navbar-static-top" role="navigation">
+          <div class="container">
+
+               <div class="navbar-header">
+                    <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                         <span class="icon icon-bar"></span>
+                         <span class="icon icon-bar"></span>
+                         <span class="icon icon-bar"></span>
+                    </button>
+                    <a href="index.html" class="navbar-brand">Home</a>
+                    <a href="admin.html" style="float: left" class="navbar-brand">Admin</a>
+                    <a href="write.html" style="float: left" class="navbar-brand">Write</a>
+               </div>
+
+          </div>
+     </div>
+
+     <!-- Home Section -->
+     <!--
+     <section id="home" class="main-home parallax-section">
+          <div class="overlay"></div>
+          <div id="particles-js"></div>
+          <div class="container">
+               <div class="row">
+
+                    <div class="col-md-12 col-sm-12">
+                         <h1>Hello, This is WeBlog Administrator Page.</h1>
+                         <h4>This page allows users to manage their own blogs.</h4>
+                    </div>
+
+               </div>
+          </div>
+     </section>
+    -->
+
+     <!-- Blog Section -->
+     
+     <section id="blog">
+          <div class="container">
+               <div class="row">
+                    <!-- 显示所有博客列表 
+                    v-bloak 能够渲染插值表达式的闪烁问题 
+                    <div class="col-md-offset-1 col-md-10 col-sm-12" v-show="blog.blog_id == null">
+                         <div class="blog-post-thumb" v-for="blog in blogs" v-cloak>
+                              <div class="blog-post-image">
+                                   <a href="single-post.html">
+                                   </a>
+                              </div>
+                              <div class="blog-post-title">
+                                   <h3><a v-on:click="edit_blog(blog.blog_id)">{{blog.title}}</a></h3>
+                              </div>
+                              <div class="blog-post-format">
+                                   <span><a href="#"><img src="images/头像.jpeg" class="img-responsive img-circle">
+                                             {{blog.author}}</a></span>
+                                   <span><i class="fa fa-date"></i><img src="images/时间.png"> {{blog.create_time}}</span>
+                                   <span><a href="#"><i class="fa "></i><img src="images/标签.png">
+                                             {{tag_id2tag_name(blog.tag_id)}}</a></span>
+                              </div>
+                              <div>
+                                  <img src="images/删_除_.png" width="40" height="40" v-on:click="delete_blog(blog.blog_id)">
+                              </div>
+                         </div>
+                    </div>
+                -->
+
+                    <!-- 编辑某个具体的博客 -->
+                    <div class="col-md-offset-1 col-md-10 col-sm-12" v-cloak>
+                        <div class="am-form">
+                            <div class="am-form-group">
+                                <label for="doc-ipt-email-1">博客标题</label>
+                            </br>
+                                <input type="text" class="" v-model="blog.title">
+                            </div>
+                        </div>
+                    
+                        <article id="blog_write">
+                            <textarea></textarea>
+                        </article>
+                        <img src="images/返回.png" width="40" height="40" herf="index.html">
+                        <img style="float: right" src="images/对勾.png" width="40" height="40" v-on:click="write_blog()">
+                    </div>
+               </div>
+          </div>
+     </section>
+
+     <!-- Footer Section -->
+     <!-- 跳到顶部按钮 -->
+     <footer>
+          <div class="container">
+               <div class="row">
+
+                    <div class="col-md-12 col-sm-12">
+                         <h3>Talk to me</h3>
+                         <ul class="social-icon">
+                              <li><a href="https://github.com/gdis5251"><img src="images/github.png" width="50" height="50"></a></li>
+                         </ul>
+                    </div>
+
+               </div>
+          </div>
+     </footer>
+
+
+     <!-- Back top -->
+     <a href="#back-top" class="go-top"><i class="fa fa-angle-up"></i></a>
+
+     <script src="js/jquery.js"></script>
+     <script src="js/bootstrap.min.js"></script>
+     <script src="js/particles.min.js"></script>
+     <script src="js/app.js"></script>
+     <script src="js/jquery.parallax.js"></script>
+     <script src="js/smoothscroll.js"></script>
+     <script src="js/custom.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+     <!-- 引入 markdown 编辑器 -->
+     <script src="editor.md/lib/marked.min.js"></script>
+     <script src="editor.md/lib/prettify.min.js"></script>
+     <script src="editor.md/lib/raphael.min.js"></script>
+     <script src="editor.md/lib/underscore.min.js"></script>
+     <script src="editor.md/lib/sequence-diagram.min.js"></script>
+     <script src="editor.md/lib/flowchart.min.js"></script>
+     <script src="editor.md/lib/jquery.flowchart.min.js"></script>
+     <script src="editor.md/editormd.js"></script>
+
+     <!-- SCRIPTS -->
+     <script>
+          // 构造 Vue 数据
+          var app = new Vue({
+               el: '#blog',
+               data: {
+                    author: "Gerald Kwok",
+                    blogs: [
+                    ],
+                    tags: [
+                    ],
+                    blog: {
+                         blog_id: null,
+                         title: null,
+                         content: null,
+                         create_time: null,
+                         tag_id: null
+                    }
+               },
+               methods: {
+                    tag_id2tag_name(tag_id) {
+                         for (var index in this.tags) {
+                              if (this.tags[index].tag_id == tag_id) {
+                                   return this.tags[index].tag_name;
+                              }
+                         }
+                         return "default";
+                    },
+                    get_blogs(tag_id) {
+                         url = "/blog";
+                         if (tag_id != null) {
+                              url = "/blog/" + tag_id;
+                         }
+
+                         $.ajax({
+                              url: url,
+                              context: this,
+                              type: "get",
+                              success: function (data, status) {
+                                   this.blogs = data;
+                              }
+                         });
+                    },
+                    init() {
+                         // 1. 从服务器上获取 tag
+                         $.ajax({
+                              type: "get",
+                              url: "/tag",
+                              context: this,
+                              success: function (data, status) {
+                                   this.tags = data;
+                                   // 2. 从服务器上获取博客
+                                   this.get_blogs();
+                              }
+                         })
+                    },
+                    get_blog(blog_id)
+                    {
+                         $.ajax({
+                              type: "get",
+                              context: this,
+                              url: "/blog/" + blog_id,
+                              success: function(data, status)
+                              {
+                                   this.blog = data;
+                                   // 把这个 markdown 格式的数据转成 html, 并显示在界面上
+                                   testEditormdView = editormd.markdownToHTML("blog_write", {
+                                        markdown: this.blog.content,//+ "\r\n" + $("#append-test").text(),
+                                        //htmlDecode      : true,       // 开启 HTML 标签解析，为了安全性，默认不开启
+                                        htmlDecode: "style,script,iframe",  // you can filter tags decode
+                                        //toc             : false,
+                                        tocm: true,    // Using [TOCM]
+                                        //tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
+                                        //gfm             : false,
+                                        //tocDropdown     : true,
+                                        // markdownSourceCode : true, // 是否保留 Markdown 源码，即是否删除保存源码的 Textarea 标签
+                                        emoji: true,
+                                        taskList: true,
+                                        tex: true,  // 默认不解析
+                                        flowChart: true,  // 默认不解析
+                                        sequenceDiagram: true,  // 默认不解析
+                                   });
+                                   testEditorView = editormd.
+                              }
+                         })
+                    },
+                    back()
+                    {
+                         this.blog = {};
+                    },
+                    edit_blog(blog_id)
+                    {
+                        // 1. 先把之前的博客数据清空
+                        this.blog = {};
+                        // 2. 使用 ajax 获取到当前点击的博客内容
+                        $.ajax({
+                            url: "/blog/" + blog_id,
+                            type: "get",
+                            context: this,
+                            success: function (data, status) {
+                                this.blog = data;
+                                // 3. 根据数据加载 markdown 编辑器
+                                testEditor = editormd("blog_view", {
+                                    width: "100%",
+                                    height: "700px",
+                                    syncScrolling: "single",
+                                    path: "editor.md/lib/"
+                                });
+                            }
+                        })
+                    },
+                    delete_blog(blog_id)
+                    {
+                        $.ajax({
+                            url: "/blog/" + blog_id,
+                            type: "delete",
+                            context: this,
+                            success(data, status)
+                            {
+                                this.get_blogs();
+                                alert("删除成功！");
+                            }
+                        })
+                    },
+                   updata_blog(blog_id) {
+                       // 从编辑器中获取到修改后的 markdown 数据
+                       var content = testEditor.getMarkdown();
+                       var body = {
+                           title: this.blog.title,
+                           content: content, // 此处需要得到修改后的内容
+                           tag_id: this.blog.tag_id
+                       }
+                       $.ajax({
+                           type: "put",
+                           url: "/blog/" + blog_id,
+                           data: JSON.stringify(body),
+                           contentType: 'application/json;charset=utf-8',
+                           context: this,
+                           success: function (data, status) {
+                               this.get_blogs();
+                               alert("提交成功");
+                               this.back();
+                           }
+                       })
+                   }
+               },
+          })
+
+          app.init();
+     </script>
+</body>
+
+</html>
