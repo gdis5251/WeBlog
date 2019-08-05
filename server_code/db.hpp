@@ -7,6 +7,7 @@
 #include <memory>
 #include <mysql/mysql.h>
 #include <jsoncpp/json/json.h>
+#include "MD5.hpp"
 
 namespace blog_system
 {
@@ -280,6 +281,93 @@ public:
 private:
     MYSQL* mysql_;
 
+};
+
+class UserInfo
+{
+public:
+    UserInfo(MYSQL* mysql)
+        :mysql_(mysql)
+    {}
+
+    bool Insert(const Json::Value& user_info)
+    {
+        // 使用 MD5 程序将密码加密
+        MD5 md5;
+        md5.StrMD5(user_info["user_password"].asCString());
+        std::string pw = md5.getMD5();
+
+
+        char sql[1024 * 4] = {0};
+        sprintf(sql, "insert into user_info value(null, '%s', '%s')", user_info["user_name"].asCString(), pw.c_str());
+        
+        int ret = mysql_query(mysql_, sql);
+        if (ret != 0)
+        {
+            printf("用户注册失败！'%s'\n", mysql_error(mysql_));
+            return false;
+        }
+        printf("用户注册成功!\n");
+
+        return true;
+        
+        return true;
+    }
+
+    bool Check(const Json::Value& user_info)
+    {
+        if (user_info["user_name"].asString().empty())
+        {
+            printf("用户名为空！\n");
+            return false;
+        }
+
+        char sql[1024 * 4] = {0};
+        sprintf(sql, "select user_password from user_info where user_name = '%s' ", user_info["user_name"].asCString());
+
+        int ret = mysql_query(mysql_, sql);
+        if (ret != 0)
+        {
+            printf("SQL 语句语法错误! '%s'\n", sql);
+            return false;
+        }
+
+        // 计算传进来的密码
+        MD5 md5;
+        md5.StrMD5(user_info["user_password"].asCString());
+        std::string pw = md5.getMD5();
+        std::string u_pw;
+
+        MYSQL_RES* result = mysql_store_result(mysql_);
+        // int rows = mysql_num_rows(result);
+        // for (int i = 0; i < rows; i++)
+        // {
+        MYSQL_ROW row = mysql_fetch_row(result);
+        if (row == NULL)
+        {
+            printf("没有该用户！\n %s", user_info["user_name"].asCString());
+            return false;
+        }
+        u_pw = row[0];
+
+        //TODO
+        std::cout << pw.c_str() << std::endl;
+        std::cout << u_pw.c_str() << std::endl;
+        std::cout << pw.compare(u_pw) << std::endl;
+
+        if (pw.compare(u_pw) != 0)
+        {
+            printf("密码不匹配！\n");
+            return false;
+        }
+        // }
+
+        printf("密码匹配成功！\n'%s'\n ", sql);
+
+        return true;
+    }
+private:
+    MYSQL* mysql_;
 };
 
 }; // end of blog_system

@@ -25,6 +25,7 @@ int main()
     // 2. 创建一个相关数据库处理对象
     BlogTable blog_table(mysql);
     TagTable tag_table(mysql);
+    UserInfo user_info(mysql);
 
     // 3. 创建服务器, 并设置“路由”（HTTP 中的路由，跟IP中的路由不一样，
     // 此处的路由指的是把 方法 + path => 哪个函数关联关系声明清楚）
@@ -336,7 +337,114 @@ int main()
                resp.set_content(writer.write(tags), "application/json"); 
                return;
                });
+    
+    // 登录
+    server.Post("/login", [&user_info](const Request& req, Response& resp) {
+        printf("用户登录！\n");
 
+        Json::FastWriter writer;
+        Json::Reader reader;
+        Json::Value req_json;
+        Json::Value resp_json;
+
+        bool ret = reader.parse(req.body, req_json);
+        if (!ret)
+        {
+            printf("解析出错！ '%s'\n", req.body.c_str());
+
+            // 构造一个响应对象给客户端
+            resp_json["ok"] = false;
+            resp_json["reason"] = "login parse request failed!";
+            resp.status = 400;
+            resp.set_content(writer.write(resp_json), "application/json");
+
+            return;
+        }
+
+        if (req_json["user_name"].empty())
+        {
+            // 解析出错，给用户提示
+            printf("查找用户失败！ %s\n", req.body.c_str());
+            // 构造一个响应对象，告诉客户端出错
+            resp_json["ok"] = false;
+            resp_json["reason"] = "search user format failed!";
+            resp.status = 400;
+            resp.set_content(writer.write(resp_json), "application/json");
+
+            return;
+        }
+
+        ret = user_info.Check(req_json);
+        if (!ret)
+        {
+            printf("密码不匹配！\n");
+
+            resp_json["ok"] = false;
+            resp_json["reason"] = "password is wrong!";
+            resp.status = 400;
+            resp.set_content(writer.write(resp_json), "application/json");
+
+            return;
+        }
+
+        resp_json["ok"] = true;
+        resp.set_content(writer.write(resp_json), "application/json");
+
+
+    });
+
+    server.Post("/sign_in", [&user_info](const Request& req, Response& resp){
+        printf("注册用户！\n");
+
+        Json::FastWriter writer;
+        Json::Reader reader;
+        Json::Value req_json;
+        Json::Value resp_json;
+
+        bool ret = reader.parse(req.body, req_json);
+        if (!ret)
+        {
+            printf("解析出错！ '%s'\n", req.body.c_str());
+
+            // 构造一个响应对象给客户端
+            resp_json["ok"] = false;
+            resp_json["reason"] = "login parse request failed!";
+            resp.status = 400;
+            resp.set_content(writer.write(resp_json), "application/json");
+
+            return;
+        }
+
+        if (req_json["user_name"].empty())
+        {
+            // 解析出错，给用户提示
+            printf("插入用户失败！ %s\n", req.body.c_str());
+            // 构造一个响应对象，告诉客户端出错
+            resp_json["ok"] = false;
+            resp_json["reason"] = "search user format failed!";
+            resp.status = 400;
+            resp.set_content(writer.write(resp_json), "application/json");
+
+            return;
+        }
+        
+        ret = user_info.Insert(req_json);
+        if (!ret)
+        {
+            printf("插入用户失败！\n");
+
+            resp_json["ok"] = false;
+            resp_json["reason"] = "insert user failed!";
+            resp.status = 400;
+            resp.set_content(writer.write(resp_json), "application/json");
+
+            return;
+        }
+
+        resp_json["ok"] = true;
+        resp.set_content(writer.write(resp_json), "application/json");
+
+    });
 
 
 
