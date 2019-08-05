@@ -181,7 +181,7 @@
                          content: null,
                          create_time: null,
                          tag_id: null
-                    }
+                    },
                },
                methods: {
                     tag_id2tag_name(tag_id) {
@@ -252,9 +252,15 @@
                     back()
                     {
                          this.blog = {};
+                    },
+                    write()
+                    {
+                         this.iswrite = 1;
                     }
                },
           })
+
+          
 
           app.init();
      </script>
