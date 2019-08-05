@@ -59,20 +59,6 @@
 
   - 注意这里参数如果填空，就返回一个句柄。空需要 NULL 不能写成 nullptr。
 
-  - ##### Description
-
-    Allocates or initializes a `MYSQL` object suitable for [`mysql_real_connect()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-real-connect.html). If `mysql` is a `NULL` pointer, the function allocates, initializes, and returns a new object. Otherwise, the object is initialized and the address of the object is returned. If [`mysql_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-init.html) allocates a new object, it is freed when [`mysql_close()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-close.html) is called to close the connection.
-
-    In a nonmultithreaded environment, [`mysql_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-init.html) invokes [`mysql_library_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-library-init.html) automatically as necessary. However,[`mysql_library_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-library-init.html) is not thread-safe in a multithreaded environment, and thus neither is [`mysql_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-init.html). Before calling [`mysql_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-init.html), either call [`mysql_library_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-library-init.html) prior to spawning any threads, or use a mutex to protect the [`mysql_library_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-library-init.html) call. This should be done prior to any other client library call.
-
-    ##### Return Values
-
-    An initialized `MYSQL*` handler. `NULL` if there was insufficient memory to allocate a new object.
-
-    ##### Errors
-
-    In case of insufficient memory, `NULL` is returned.
-
 - ##### MYSQL *mysql_real_connect(MYSQL *mysql, const char *host, const char *user, const char *passwd, const char *db, unsigned int port, const char *unix_socket, unsigned long client_flag)      (8 个参数！！！！)
 
   - **参数**
@@ -97,69 +83,9 @@
 
   - 如果成功返回跟刚才一样的句柄，如果失败返回 NULL
 
-  - **一些错误码**
-
-  - ##### Errors
-
-    - [`CR_CONN_HOST_ERROR`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_conn_host_error)
-
-      Failed to connect to the MySQL server.
-
-    - [`CR_CONNECTION_ERROR`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_connection_error)
-
-      Failed to connect to the local MySQL server.
-
-    - [`CR_IPSOCK_ERROR`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_ipsock_error)
-
-      Failed to create an IP socket.
-
-    - [`CR_OUT_OF_MEMORY`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_out_of_memory)
-
-      Out of memory.
-
-    - [`CR_SOCKET_CREATE_ERROR`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_socket_create_error)
-
-      Failed to create a Unix socket.
-
-    - [`CR_UNKNOWN_HOST`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_unknown_host)
-
-      Failed to find the IP address for the host name.
-
-    - [`CR_VERSION_ERROR`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_version_error)
-
-      A protocol mismatch resulted from attempting to connect to a server with a client library that uses a different protocol version.
-
-    - [`CR_NAMEDPIPEOPEN_ERROR`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_namedpipeopen_error)
-
-      Failed to create a named pipe on Windows.
-
-    - [`CR_NAMEDPIPEWAIT_ERROR`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_namedpipewait_error)
-
-      Failed to wait for a named pipe on Windows.
-
-    - [`CR_NAMEDPIPESETSTATE_ERROR`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_namedpipesetstate_error)
-
-      Failed to get a pipe handler on Windows.
-
-    - [`CR_SERVER_LOST`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_server_lost)
-
-      If [`connect_timeout`](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_connect_timeout) > 0 and it took longer than [`connect_timeout`](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_connect_timeout) seconds to connect to the server or if the server died while executing the `init-command`.
-
-    - [`CR_ALREADY_CONNECTED`](https://dev.mysql.com/doc/refman/8.0/en/client-error-reference.html#error_cr_already_connected)
-
-      The `MYSQL` connection handler is already connected.
-
 - ##### int mysql_set_character_set(MYSQL *mysql, const char *csname)
 
   - 设置字符集
-
-  - ##### Description
-
-    This function is used to set the default character set for the current connection. The string `csname` specifies a valid character set name. The connection collation becomes the default collation of the character set. This function works like the [`SET NAMES`](https://dev.mysql.com/doc/refman/8.0/en/set-names.html) statement, but also sets the value of `mysql->charset`, and thus affects the character set used by [`mysql_real_escape_string()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-real-escape-string.html)
-
-    ##### Return Values
-
-    Zero for success. Nonzero if an error occurred.
 
   - 例如： mysql_set_character_set(connect_fd, "utf8"); 
 
@@ -196,10 +122,6 @@
 
   - 将刚才连接关闭，因为在某种情况下，就算程序退出，连接也不一定会一定关闭，所以一定要手动关闭。
 
-  - ##### Description
-
-    Closes a previously opened connection. [`mysql_close()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-close.html) also deallocates the connection handler pointed to by `mysql` if the handler was allocated automatically by [`mysql_init()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-init.html) or [`mysql_connect()`](https://dev.mysql.com/doc/refman/8.0/en/mysql-connect.html). Do not use the handler after it has been closed.
-  
 - ##### unsigned long mysql_real_escape_string(MYSQL *mysql, char *to, const char from, unsigned long length)
 
   - 将正文进行转义，防止正文出现特殊符号从而导致 SQL 语句出错
@@ -227,77 +149,78 @@
 5. #### 新增博客
 
    ```cpp
-   使用 POST 方法表示新增
+     使用 POST 方法表示新增
    
-   例如：
+      例如：
    
-   POST /blog
+      POST /blog
    
-   {
+      {
    
-   	title: xxxx,
+      	title: xxxx,
    
-   	content: xxxx,
+      	content: xxxx,
    
-   	create_time: xxxx,
+      	create_time: xxxx,
    
-   	tag_id:	xxxx
+      	tag_id:	xxxx
    
-   } 
+      } 
    
+      
    
+      HTTP/1.1 200 OK
    
-   HTTP/1.1 200 OK
+      {
    
-   {
+      	ok: true,
    
-   	ok: true,
+      	reason: "xxxx"
    
-   	reason: "xxxx"
-   
-   }
-   
-   
+      }
    ```
+
+
+ 
+
 
 6. #### 获取博客列表
 
    ```cpp
    查看所有博客（标题列表）
    
-   使用 GET 方法表示查看
+      使用 GET 方法表示查看
    
-   GET /blog                  	获取所有
+      GET /blog                  	获取所有
    
-   GET /blog?tag_id=1 	按照标签来筛选
+      GET /blog?tag_id=1 	按照标签来筛选
    
+      
    
+      HTTP/1.1 200 OK
    
-   HTTP/1.1 200 OK
+      [
    
-   [
+      {
+      
+      	blog_id: 1,
+      
+      	title: "My Carrer",
+      
+      	create_time: "2019/07/27",
+      
+      	tag_id: 1	
+      
+      },
+      
+   {
    
-   	{
-   
-   		blog_id: 1,
-   
-   		title: "My Carrer",
-   
-   		create_time: "2019/07/27",
-   
-   		tag_id: 1	
-   
-   	},
-   
-   	{
-   
-   		...
-   
-   	}
+      }
    
    ]
    ```
-
+   
+     
    
 
 7. #### 获取某个博客的详细内容
@@ -308,20 +231,19 @@
    GET /blog/:blog_id     // :blog_id 会将 blog_id 替换成真正的 id； 类似 /blog/1
    
    
-   
    HTTP/1.1 200 OK
    
    {
    
-   	"blog_id": 1,
+   "blog_id": 1,
    
-   	"title": "My Carrer",
+   "title": "My Carrer",
    
-   	"content": "博客正文",
+   "content": "博客正文",
    
-   	"create_time": "2019/07/27",
+   "create_time": "2019/07/27",
    
-   	"tag_id": 1	
+   "tag_id": 1	
    
    }
    ```
@@ -337,12 +259,11 @@
    
    {
    
-   	title: "修改之后的标题",
+   title: "修改之后的标题",
    
-   	content: "修改之后的正文",
+   content: "修改之后的正文",
    
-   	tag_id: "修改之后的 tag_id"
-   
+   tag_id: "修改之后的 tag_id"
    }
    
    
@@ -351,31 +272,29 @@
    
    {
    
-   	ok: true
+   ok: true
    
    }
    ```
 
    
 
-5. #### 删除博客
+9. #### 删除博客
 
    ```cpp
-使用 DELETE 表示删除
+   使用 DELETE 表示删除
    
-DELETE /blog/:blog_id
+   DELETE /blog/:blog_id
    
-
+   HTTP/1.1 200 OK
    
-HTTP/1.1 200 OK
+   {
    
-{
+   ok: true
    
-	ok: true
-   
-   }
+   }  
    ```
-   
+
    
 
 ### 二、标签管理
@@ -383,30 +302,31 @@ HTTP/1.1 200 OK
 1. #### 新增标签
 
    ```cpp
-   POST /tag
+   1. POST /tag
    
-   {
+	   {
+      "tag_name": "新增的标签名",
    
-   	"tag_name": "新增的标签名",
+      }
    
-   }
+      HTTP/1.1 200 OK
    
-   
-   
-   HTTP/1.1 200 OK
-   
-   {
-   
+   	{
    	ok: true
    
-   }
+   	}
    ```
-
+   
+   
+   
+   
    
 
 2. #### 删除标签
 
    ```cpp
+   
+   
    DELETE /tag/:tag_id
    
    
@@ -415,40 +335,43 @@ HTTP/1.1 200 OK
    
    {
    
-   	ok: true
+   ok: true
    
    }
    ```
 
    
 
+   
+
 3. #### 查看所有标签
 
-   ```cpp
-GET /tag
-   
+  ```cpp
+  2. 
+  
+     GET /tag
+  
+     HTTP/1.1 200 OK
+     [
+     {
+  
+     tag_id: 1,
+        
+     tag_name: "c++"
+  
+     },
+  
+     {},
+  
+     {}
+     ]
+  
+  
+  ```
 
-   
-HTTP/1.1 200 OK
-   
-[
-   
-	{
-   
-		tag_id: 1,
-   
-		tag_name: "c++"
-   
-	},
-   
-	{},
-   
-	{}
-   
-   ]
-   ```
-   
-   
+  
+
+
 
 ## 编码
 
@@ -488,28 +411,30 @@ TEST(event, test)
     blog["content"] = "我要拿1000W年薪！";
     blog["tag_id"] = 1;
     blog["create_time"] = "2019/07/27";
-
+    
     EXPECT_EQ(blog_table.Insert(blog), true);
-
+    
     // 测试查找
     Json::Value blogs;
     EXPECT_EQ(blog_table.SelectAll(&blogs), true);
-    
-    
+
+
+​    
     // 测试查找单个博客
     EXPECT_EQ(blog_table.SelectOne(3, &blog), true);
-    
-    
+
+
+​    
     // 测试修改博客
     blog["blog_id"] = 3;
     blog["title"] = "我的 Offers！";
     blog["content"] = "100W\n 100W 100W 100W'''''!!!100000000W'''";
     
     EXPECT_EQ(blog_table.Update(blog), true);
-
+    
     // 测试删除
     EXPECT_EQ(blog_table.Delete(3), true);
-
+    
     blog_system::MySQLRelease(mysql);
 }
 int main()
@@ -539,16 +464,16 @@ TEST(test, tag_table)
     MYSQL* mysql = blog_system::MySQLInit();
     blog_system::TagTable tag_table(mysql);
     Json::StyledWriter writer;
-
+    
     Json::Value tag;
     // 测试插入
     tag["tag_name"] = "C语言";
     EXPECT_EQ(tag_table.Insert(tag), true);
-
+    
     // 测试查找
     Json::Value tags;
     EXPECT_EQ(tag_table.SelectAll(&tags), true);
-
+    
     // 测试删除
     EXPECT_EQ(tag_table.Delete(1), true);
 }
@@ -615,3 +540,30 @@ int main()
 
 ### 3. 客户端部分
 
+#### 实现一组网页，通过网页来和服务器进行交互。主要是找一个免费模板进行修改。
+
+#### 使用 Vue.js：开源社区的框架
+
+**小操作**
+
+> ln -s 源目录 目标目录  
+>
+> 创建一个链接文件，关联到源目录上
+
+#### 使用 **Editor.md** 第三方 JS 的库，完成 markdown 和 html 相互转换，以及 markdown 在线编辑器
+
+
+
+#### 主要实现的页面
+
+- **博客列表页**：主要显示所有博客的大体信息。
+- **博客管理页**：实现博客的删除和更新操作。
+- **新增博客页**：实现对新增博客的编辑和提交。
+
+#### 改进方面
+
+2. 迁移博客==》实现一个爬虫程序(HTTP 客户端，cpp-httplib)， 把曾经的博客抓取过来然后插入到博客中
+3. 实现一个图床服务器(HTTP 服务器，专门用于存图片)
+4. 支持多用户（对数据库的表结构进行重新设计）cookie session
+5. 分页展示
+5. 搜索博客功能（简单的话用数据库：Like。用的复杂的话就是 倒排索引）
