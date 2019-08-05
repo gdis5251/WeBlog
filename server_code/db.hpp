@@ -350,10 +350,6 @@ public:
         }
         u_pw = row[0];
 
-        //TODO
-        std::cout << pw.c_str() << std::endl;
-        std::cout << u_pw.c_str() << std::endl;
-        std::cout << pw.compare(u_pw) << std::endl;
 
         if (pw.compare(u_pw) != 0)
         {
@@ -362,7 +358,7 @@ public:
         }
         // }
 
-        printf("密码匹配成功！\n'%s'\n ", sql);
+        printf("密码匹配成功！\n");
 
         return true;
     }
