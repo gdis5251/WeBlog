@@ -60,9 +60,12 @@
                          <span class="icon icon-bar"></span>
                          <span class="icon icon-bar"></span>
                     </button>
-                    <a href="index.html" class="navbar-brand">Home</a>
-                    <a href="admin.html" style="float: right" class="navbar-brand">Admin</a>
-                    <a href="write.html" style="float: right" class="navbar-brand">Write</a>
+                    <a href="index.html" class="navbar-brand">Home &nbsp &nbsp</a>
+                    
+                    <!-- <a href="admin.html" style="float: left" class="navbar-brand">Admin &nbsp &nbsp</a> -->
+
+                    <a href="write.html" style="float: left" class="navbar-brand">Write &nbsp &nbsp</a>
+                    <a href="login.html" style="float: left" class="navbar-brand">Login In &nbsp &nbsp</a>
                </div>
 
           </div>
@@ -152,6 +155,8 @@
      <script src="js/jquery.parallax.js"></script>
      <script src="js/smoothscroll.js"></script>
      <script src="js/custom.js"></script>
+
+     <!-- Vue -->
      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
      <!-- 引入 markdown 编辑器 -->
@@ -253,10 +258,6 @@
                     {
                          this.blog = {};
                     },
-                    write()
-                    {
-                         this.iswrite = 1;
-                    }
                },
           })
 
