@@ -4,6 +4,8 @@
 
 制作一个网页版的博客管理系统，用户可以添加、查看、修改、删除博客。还可以对博客进行标签设定。当然标签也是可以添加、查看和删除的。
 
+对于一个匿名用户进入网页后只能看到博客的标题和具体内容，不能对其进行修改和删除。当用户进行登录操作并且成功后，会自动进行博客管理页面，可以对博客进行修改和删除。
+
 ## 环境
 
 - 编程语言：C++
@@ -17,6 +19,7 @@
 1. 只支持单个用户。
 2. 实现针对文章的 CURD 。
 3. 实现针对标签的 CURD (分类)。
+4. 用户登录
 
 ## 模块划分
 
@@ -27,6 +30,7 @@
 1. 展现博客列表页面
 2. 展现博客详情页面
 3. 管理博客页面
+4. 登录页面
 
 当用户在网页上执行某个操作的时候，比如新增博客，此时就会由客户端给服务器发送 HTTP 请求， 请求中就包含了用户行为，服务器再根据这个行为来完成对数据的操作(对数据库的操作)。
 
@@ -48,6 +52,10 @@
 3. 创建一个标签表
    - tag_id int 
    - tag_name varchar(50)
+4. 创建用户表
+   - user_id
+   - user_name
+   - user_password
 
 #### 使用 C 语言 MySQL API 来完成数据库操作
 
@@ -138,8 +146,6 @@
 
 ### 一、博客管理
 
-1. 传统的 API 设计方式：使用 query_string 来进行传递信息
-
 2. **restful 风格的 API 设计方式**：**使用不用的 HTTP 方法来表达不同的语义**
 
 3. **使用 path 来表示要操作的资源**
@@ -149,39 +155,24 @@
 5. #### 新增博客
 
    ```cpp
-     使用 POST 方法表示新增
+   使用 POST 方法表示新增
+   例如：
    
-      例如：
+   POST /blog
+   {
+      	"title": "xxxx",
+      	"content": "xxxx",
+      	"create_time": "xxxx",
+      	"tag_id":	"xxxx"
+   } 
    
-      POST /blog
-   
-      {
-   
-      	title: xxxx,
-   
-      	content: xxxx,
-   
-      	create_time: xxxx,
-   
-      	tag_id:	xxxx
-   
-      } 
-   
-      
-   
-      HTTP/1.1 200 OK
-   
-      {
-   
+   HTTP/1.1 200 OK
+   {
       	ok: true,
-   
       	reason: "xxxx"
-   
-      }
+   }
    ```
 
-
- 
 
 
 6. #### 获取博客列表
@@ -189,62 +180,45 @@
    ```cpp
    查看所有博客（标题列表）
    
-      使用 GET 方法表示查看
+   使用 GET 方法表示查看
    
-      GET /blog                  	获取所有
+   GET /blog                  	获取所有
    
-      GET /blog?tag_id=1 	按照标签来筛选
+   GET /blog?tag_id=1 	按照标签来筛选
    
       
    
-      HTTP/1.1 200 OK
-   
-      [
-   
+   HTTP/1.1 200 OK
+   [
       {
       
-      	blog_id: 1,
-      
-      	title: "My Carrer",
-      
-      	create_time: "2019/07/27",
-      
-      	tag_id: 1	
-      
-      },
-      
-   {
-   
-      }
-   
+      		"blog_id": 1,
+      		"title": "My Carrer",
+      		"create_time": "2019/07/27",
+      		"tag_id": 1	
+      	},
+       {
+           
+       }
    ]
    ```
    
      
    
-
 7. #### 获取某个博客的详细内容
 
    ```cpp
    查看某个博客
-   
    GET /blog/:blog_id     // :blog_id 会将 blog_id 替换成真正的 id； 类似 /blog/1
    
-   
    HTTP/1.1 200 OK
-   
    {
    
-   "blog_id": 1,
-   
-   "title": "My Carrer",
-   
-   "content": "博客正文",
-   
-   "create_time": "2019/07/27",
-   
-   "tag_id": 1	
-   
+   	"blog_id": 1,
+   	"title": "My Carrer",
+   	"content": "博客正文",
+   	"create_time": "2019/07/27",
+   	"tag_id": 1	
    }
    ```
 
@@ -254,26 +228,20 @@
 
    ```cpp
    使用 PUT 方法表示修改
-   
    PUT /blog/:blog_id
    
    {
    
-   title: "修改之后的标题",
+   	"title": "修改之后的标题",
    
-   content: "修改之后的正文",
+   	"content": "修改之后的正文",
    
-   tag_id: "修改之后的 tag_id"
+   	"tag_id": "修改之后的 tag_id"
    }
    
-   
-   
    HTTP/1.1 200 OK
-   
    {
-   
-   ok: true
-   
+   	ok: true
    }
    ```
 
@@ -283,15 +251,11 @@
 
    ```cpp
    使用 DELETE 表示删除
-   
    DELETE /blog/:blog_id
    
    HTTP/1.1 200 OK
-   
    {
-   
-   ok: true
-   
+   	ok: true
    }  
    ```
 
@@ -302,74 +266,87 @@
 1. #### 新增标签
 
    ```cpp
-   1. POST /tag
+   POST /tag
+   {
+		"tag_name": "新增的标签名",
+   }
    
-	   {
-      "tag_name": "新增的标签名",
-   
-      }
-   
-      HTTP/1.1 200 OK
-   
-   	{
+   HTTP/1.1 200 OK
+   {
    	ok: true
-   
-   	}
+   }
    ```
    
    
    
-   
-   
-
 2. #### 删除标签
 
    ```cpp
-   
-   
    DELETE /tag/:tag_id
    
+   HTTP/1.1 200 OK
+   {
+   	ok: true
+   }
+   ```
    
+   
+   
+3. #### 查看所有标签
+
+   ```cpp
+   GET /tag
+     
+   HTTP/1.1 200 OK
+   [
+   	{
+     		"tag_id": 1,
+        	"tag_name": "c++"
+   	},
+   	{},
+   	{}
+   ] 
+   ```
+
+   
+
+  
+
+### 三、用户管理
+
+1. #### 用户登录
+
+   ```cpp
+   POST /login
+   {
+   	"user_name": "xxx",
+   	"user_password": "xxx"
+   }
    
    HTTP/1.1 200 OK
-   
    {
-   
-   ok: true
-   
+   	ok: "true"
    }
    ```
 
    
 
+2. #### 用户注册
+
+   ```cpp
+   POST /sign_in
+   {
+   	"user_name": "xxx",
+   	"user_password": "xxx"
+   }
    
+   HTTP/1.1 200 OK
+   {
+   	ok: "true"
+   }
+   ```
 
-3. #### 查看所有标签
-
-  ```cpp
-  2. 
-  
-     GET /tag
-  
-     HTTP/1.1 200 OK
-     [
-     {
-  
-     tag_id: 1,
-        
-     tag_name: "c++"
-  
-     },
-  
-     {},
-  
-     {}
-     ]
-  
-  
-  ```
-
-  
+   
 
 
 
@@ -562,8 +539,14 @@ int main()
 
 #### 改进方面
 
-2. 迁移博客==》实现一个爬虫程序(HTTP 客户端，cpp-httplib)， 把曾经的博客抓取过来然后插入到博客中
-3. 实现一个图床服务器(HTTP 服务器，专门用于存图片)
-4. 支持多用户（对数据库的表结构进行重新设计）cookie session
-5. 分页展示
+1. 迁移博客==》实现一个爬虫程序(HTTP 客户端，cpp-httplib)， 把曾经的博客抓取过来然后插入到博客中
+
+   存在问题：目前我的博客显示页面是加载所有博客和标题，只是选择性显示。所以如果博客数量增多会导致进入页面的时候加载非常慢。
+
+2. 实现一个图床服务器(HTTP 服务器，专门用于存图片)
+
+3. 支持多用户（对数据库的表结构进行重新设计）cookie session
+
+4. 分页展示
+
 5. 搜索博客功能（简单的话用数据库：Like。用的复杂的话就是 倒排索引）
