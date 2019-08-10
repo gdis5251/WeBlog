@@ -28,7 +28,12 @@ create table if not exists tag_table(
 
 
 
-
+-- 创建用户表
+create table if not exists user_info(
+	user_id int primary key auto_increment comment '用户id',
+	user_name varchar(32) unique comment '用户名',
+	user_password varchar(32) comment '用户密码'
+	);
 
 
 
