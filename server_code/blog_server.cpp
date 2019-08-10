@@ -50,15 +50,14 @@ int main()
                     // 构造一个响应对象，告诉客户端出错
                     resp_json["ok"] = false;
                     resp_json["reason"] = "Parse error!";
-                    
                     resp.status = 400;
                     resp.set_content(writer.write(resp_json), "application/json");
 
                     return;
                 }
 
-                // 2.对参数进行校验 
-                if (req_json["title"].empty() || 
+                // 2.对参数进行校验
+                if (req_json["title"].empty() ||
                     req_json["content"].empty() ||
                     req_json["tag_id"].empty() ||
                     req_json["create_time"].empty())
@@ -169,8 +168,8 @@ int main()
                     return;
                }
 
-               // 3.对参数进行校验 
-               if (req_json["title"].empty() || 
+               // 3.对参数进行校验
+               if (req_json["title"].empty() ||
                    req_json["content"].empty() ||
                    req_json["tag_id"].empty())
                {

@@ -259,6 +259,7 @@ public:
         int ret = mysql_query(mysql_, sql);
         if (ret != 0)
         {
+            printf("SQL: %s\n", sql);
             printf("查找标签失败！ '%s'\n", mysql_error(mysql_));
             return false;
         }

@@ -62,7 +62,9 @@
                          <span class="icon icon-bar"></span>
                     </button>
                     <a href="index.html" class="navbar-brand">Home</a>
+                    <!--
                     <a href="admin.html" style="float: left" class="navbar-brand">Admin</a>
+                    -->
                     <a href="write.html" style="float: left" class="navbar-brand">Write</a>
                </div>
 
@@ -167,9 +169,9 @@
                                    return this.tags[index].tag_id;
                               }
                          }
-                         return "default";
+                         return 6;
                     },
-                    init() {
+                    GetTags() {
                          // 1. 从服务器上获取 tag
                          $.ajax({
                               type: "get",
@@ -183,12 +185,40 @@
                    write_blog() {
                        // 从编辑器中获取到修改后的 markdown 数据
                          var content = testEditor.getMarkdown();
+                         
+                         // 获取当前时间
                          date = new Date();
                          year = date.getFullYear();
                          month = date.getMonth() + 1;
                          day = date.getDay() + 4;
-                         create_time = year + '/' + month + '/' + day; // 时间有问题
+                         create_time = year + '/' + month + '/' + day; 
+
+                         // 拿到 tag_id
                          tag_id = this.tag_name2tag_id(tag_name.value);
+                         // if (tag_id == 6)
+                         // {
+                         //     // 插入标签
+                         //     var body = {
+                         //         tag_name: tag_name.value
+                         //     }
+                         //     $.ajax({
+                         //            type: "post",
+                         //            url: "/tag",
+                         //            data: JSON.stringify(body),
+                         //            contentType: 'application/json; charset=utf-8',
+                         //            context: this,
+                         //            success: function(data, status)
+                         //            {
+                         //                console.log("Success to insert tag");
+                         //            }
+                         //     })
+
+                         //     // 重新获取所有标签
+                         //     // this.GetTags();
+                         //     console.log(this.tags);
+                         //     tag_id = this.tag_name2tag_id(tag_name.value);
+                         //     console.log(tag_id);
+                         // }
                          var body = {
                               title: blog_title.value,
                               content: content, // 此处需要得到修改后的内容
@@ -208,13 +238,6 @@
                               }
                          })
                     },
-                   get_time() {
-                        date = new Date();
-                        year = date.getFullYear();
-                        month = date.getMonth() + 1;
-                        day = date.getDay();
-                        create_time = year+'/'+month+'/'+day;
-                   }
                },
           })
                $(function () {
@@ -235,7 +258,7 @@
                     });
                     */
                });
-               app.init();
+               app.GetTags();
      </script>
 </body>
 
