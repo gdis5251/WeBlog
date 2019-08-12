@@ -19,7 +19,7 @@ int main()
     signal(SIGINT, [](int signo){
            (void) signo;
            blog_system::MySQLRelease(mysql);
-           exit(EXIT_FAILURE);
+           exit(EXIT_SUCCESS);
            });
 
     // 2. 创建一个相关数据库处理对象
